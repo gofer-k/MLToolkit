@@ -18,7 +18,7 @@ set(BINARY_DESTINATION_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
  add_executable(${PROJECT_NAME} main.cpp)
 
  add_subdirectory(GnuPlotWrapper)
- add_subdirectory(Regression)
+ add_subdirectory(src)
 
  target_link_libraries(${PROJECT_NAME} 
  ${CONAN_LIBS} 
