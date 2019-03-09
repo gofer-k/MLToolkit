@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 
 class GnuplotPipe {
@@ -66,12 +67,33 @@ public:
 
     void setTitle(std::string aTitle)
     {
-      std::string titleText {"title \""};
-      titleText += std::move(aTitle);
-      titleText += "\"";
-      sendLine(titleText);
+      std::stringstream ss;
+      ss << "set title \"" << aTitle << "\"";
+      sendLine(ss.str());
     }
 
+    void setLabelX(std::string aLabelText)
+    {
+      std::stringstream ss;
+      ss << "set xlabel \"" << aLabelText << "\"";
+      sendLine(ss.str());
+    }
+
+    void setLabelY(std::string aLabelText)
+    {
+      std::stringstream ss;
+      ss << "set ylabel \"" << aLabelText << "\"";
+      sendLine(ss.str());
+    }
+
+    void setContourMode()
+    {
+        // sendLine("set view map");
+        // sendLine("unset surface");
+        sendLine("set contour base");
+        sendLine("set style data lines");
+        sendLine("set cntrparam level incremental 0, 100, 1000");
+    }
 private:
     GnuplotPipe(GnuplotPipe const&) = delete;
     void operator=(GnuplotPipe const&) = delete;

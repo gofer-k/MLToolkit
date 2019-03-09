@@ -1,6 +1,5 @@
 #include <iostream>
 #include <armadillo>
-#include "gnuplot.h"
 
 // Armadillo documentation is available at:
 // http://arma.sourceforge.net/docs.html
@@ -145,11 +144,6 @@ int main(int argc, char** argv)
   }
   F.print("F:");
   // ----------------- end Armadillo evample
-
-  // --------------- Gnuplot-cpp example
-  GnuplotPipe gp;
-  
-  gp.sendLine("plot [-pi/2:pi] cos(x),-(sin(x) > sin(x+1) ? sin(x) : sin(x+1))");
   // gp.sendLine("plot x**2 title \"x^2\"");
   return 0;
 }

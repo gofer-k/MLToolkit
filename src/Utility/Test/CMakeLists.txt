@@ -10,15 +10,20 @@ MESSAGE( STATUS "Using GTest from: " ${GTEST_DIR} )
 MESSAGE( STATUS "Using GMock from: " ${GMOCK_DIR} )
 
 set(IMPLEMENTATION_SOURCES
+  ContourTest.cpp
   CostFunctionTest.cpp
   GradientDescentTest.cpp
   GTestMain.cpp
+  PlotCostFunctionTest.cpp
+  PlotRegressionTest.cpp
 )
 
-include_directories(
+include_directories(${PROJECT_NAME}
+  PRIVATE
   "${GMOCK_DIR}/include"
   "${GTEST_DIR}/include"
-  "../Interface")
+  "../Interface"
+  "../Implementation")
 
 link_directories(
   "${GMOCK_DIR}/build"
@@ -27,15 +32,13 @@ link_directories(
 
 add_executable(${PROJECT_NAME} ${IMPLEMENTATION_SOURCES})
 
-add_dependencies(${PROJECT_NAME} MLToolkit.Utility)
-
-target_link_libraries(${PROJECT_NAME}  
-  gtest
-  gmock
-  pthread
-  MLToolkit.Utility
-  # add any thrid party library which is referenced in test defined in this project
-)
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+    gmock
+    gtest
+    pthread
+    MLToolkit.GnuPlotWrapper
+    MLToolkit.Utility)
 
 # Installation folder. Run 'make install' to install this project in specified folder
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${BINARY_DESTINATION_DIRECTORY})

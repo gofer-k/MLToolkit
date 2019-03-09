@@ -9,8 +9,7 @@ target_include_directories(${PROJECT_NAME}
   PUBLIC Interface
 
   # Make Implementation folder not exposed outside library
-  PRIVATE Implementation
-  
+  PRIVATE Implementation ${OCTAVE_INCLUDE_DIR}  
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -19,4 +18,4 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 # Installation folder. Run 'make install' to install this project in specified folder
-install(TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION ${BINARY_DESTINATION_DIRECTORY})
+install(TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION ${BINARY_DESTINATION_DIRECTORY}) 

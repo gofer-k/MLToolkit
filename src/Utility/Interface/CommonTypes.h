@@ -7,7 +7,8 @@ namespace MLToolkit
 {
 namespace Utility
 {
-  using Matrix = arma::mat;
+  using Matrix = arma::mat;  
+  using ByteMat = arma::Mat<uint16_t>;
   using Vector = arma::vec;  
 }
 }
