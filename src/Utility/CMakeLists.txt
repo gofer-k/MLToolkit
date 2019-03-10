@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(MLToolkit.Utility)
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} 
     Implementation/Contour.cpp
+    Implementation/Contour.h
     Implementation/CostFunction.cpp
     Implementation/GradientDescent.cpp
     Implementation/Plot.cpp  
@@ -12,8 +13,6 @@ target_include_directories(${PROJECT_NAME}
   PUBLIC
     Interface
     ${ARMADILLO_INCLUDE_DIRS}
-  PRIVATE     
-    Implementation
 )
 
 target_link_libraries(${PROJECT_NAME}

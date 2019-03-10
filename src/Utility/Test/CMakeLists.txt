@@ -9,15 +9,6 @@ MESSAGE( STATUS "Target artifacts will be installed in: " ${CMAKE_RUNTIME_OUTPUT
 MESSAGE( STATUS "Using GTest from: " ${GTEST_DIR} )
 MESSAGE( STATUS "Using GMock from: " ${GMOCK_DIR} )
 
-set(IMPLEMENTATION_SOURCES
-  ContourTest.cpp
-  CostFunctionTest.cpp
-  GradientDescentTest.cpp
-  GTestMain.cpp
-  PlotCostFunctionTest.cpp
-  PlotRegressionTest.cpp
-)
-
 include_directories(${PROJECT_NAME}
   PRIVATE
   "${GMOCK_DIR}/include"
@@ -30,15 +21,25 @@ link_directories(
   "${GMOCK_DIR}/build/gtest"
   ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
-add_executable(${PROJECT_NAME} ${IMPLEMENTATION_SOURCES})
+add_executable(${PROJECT_NAME} )
+
+target_sources(${PROJECT_NAME} 
+  PRIVATE 
+    ContourTest.cpp
+    CostFunctionTest.cpp
+    GradientDescentTest.cpp
+    GTestMain.cpp
+    PlotCostFunctionTest.cpp
+    PlotRegressionTest.cpp
+)
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     gmock
     gtest
     pthread
-    MLToolkit.GnuPlotWrapper
-    MLToolkit.Utility)
-
+    MLToolkit.Utility
+)
+  
 # Installation folder. Run 'make install' to install this project in specified folder
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${BINARY_DESTINATION_DIRECTORY})
