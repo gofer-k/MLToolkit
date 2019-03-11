@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(MLToolkit.Utility)
 
+find_package(Boost 1.67 COMPONENTS serialization REQUIRED)
+
 add_library(${PROJECT_NAME} 
     Implementation/Contour.cpp
     Implementation/Contour.h

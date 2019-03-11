@@ -2,6 +2,12 @@
 
 conan install .. --profile clang-debug
 
-cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=${ARMADILLO_LIBRARY}
+BUILDMODE="Debug"
+
+if [ "$1" = "Release" ]; then
+   BUILDMODE=$1
+fi
+
+cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=${ARMADILLO_LIBRARY} -DCMAKE_BUILD_TYPE=$BUILDMODE
 
 cmake --build .

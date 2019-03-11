@@ -29,6 +29,7 @@ target_sources(${PROJECT_NAME}
     CostFunctionTest.cpp
     GradientDescentTest.cpp
     GTestMain.cpp
+    LinearInterpolation2DTest.cpp
     PlotCostFunctionTest.cpp
     PlotRegressionTest.cpp
 )
