@@ -347,6 +347,13 @@ namespace
     return {c.x, c.y, aIsoline};
   }
 
+  /**
+   * Look up table for controu lines: case 5
+   *  o----+
+   *  |/   |
+   *  |   /|
+   *  +----O
+   */
   template<>
   Point3d
   ComputeContourPointInCell<5>(const SurfaceCell& aCell, TCoordType aIsoline, CellSide aPreviousSide, bool aFirstPoint)
@@ -760,6 +767,8 @@ ContourGenerator::BuildMarshingSquaresGrid(const Matrix& aMeshData, TCoordType a
       paddedData.at(row + 1, col + 1) = aMeshData.at(row, col);
     }
   }
+  return {};
+}
 
   const decltype(paddedData.n_rows) gridRows = paddedData.n_rows - 1;
   const decltype(paddedData.n_cols) gridCols = paddedData.n_cols - 1;
