@@ -347,13 +347,6 @@ namespace
     return {c.x, c.y, aIsoline};
   }
 
-  /**
-   * Look up table for controu lines: case 5
-   *  o----+
-   *  |/   |
-   *  |   /|
-   *  +----O
-   */
   template<>
   Point3d
   ComputeContourPointInCell<5>(const SurfaceCell& aCell, TCoordType aIsoline, CellSide aPreviousSide, bool aFirstPoint)
@@ -454,7 +447,6 @@ namespace
     return ComputeContourPointInCell<6>(aCell, aIsoline, aPreviousSide, !aFirstPoint);
   }
   
-  //TODO: Check correctness of computeatin here
   template<>
   Point3d
   ComputeContourPointInCell<10>(const SurfaceCell& aCell, TCoordType aIsoline, CellSide aPreviousSide, bool aFirstPoint)
