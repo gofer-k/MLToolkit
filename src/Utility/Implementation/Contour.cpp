@@ -212,6 +212,100 @@ namespace
   }
 
   /**
+   * Look up table for controu lines, No flip - case 5
+   *  o----+
+   *  |/   |
+   *  |   /|
+   *  +----O
+   */
+  ContourGenerator::ContourPoints
+  ComputeCountourInSaddleCellType5(SurfaceCell aCell, double aIsoline, CellSide aPreviousSide)
+  {
+    const auto& topLeft = aCell.TopLeft();
+    const auto& topRight = aCell.TopRight();  
+    const auto& bottomRight = aCell.BottomRight();
+    const auto& bottomLeft = aCell.BottomLeft();
+
+    Point2d c1{};
+    Point2d c2{};
+
+    if (aPreviousSide == LEFT)
+    {
+      c1 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
+      c2 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);      
+    }
+    else if(aPreviousSide == RIGHT)
+    {
+      c1 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);
+      c2 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+    }
+    else if (aPreviousSide == TOP)
+    {      
+      c1 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);      
+      c2 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
+    }
+    else if(aPreviousSide == BOTTOM)
+    {
+      c1 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+      c2 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
+    }
+    else
+    {
+      throw std::logic_error("Unexpected previosu side passed to function \
+                              computing contour in saddle cell of type 5");
+    }
+    
+    return {{c1.x, c1.y, aIsoline}, {c2.x, c2.y, aIsoline}};
+  }
+
+  /**
+   * Look up table for controu lines, No flip - case 10
+   *  +----o
+   *  |   \|
+   *  |\   |
+   *  o----+
+   */
+  ContourGenerator::ContourPoints
+  ComputeCountourInSaddleCellType10(SurfaceCell aCell, double aIsoline, CellSide aPreviousSide)
+  {
+    const auto& topLeft = aCell.TopLeft();
+    const auto& topRight = aCell.TopRight();  
+    const auto& bottomRight = aCell.BottomRight();
+    const auto& bottomLeft = aCell.BottomLeft();
+      
+    Point2d c1{};
+    Point2d c2{};
+      
+    if (aPreviousSide == LEFT)
+    {
+      c1 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
+      c2 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+    }
+    else if (aPreviousSide == RIGHT)
+    {
+      c1 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);
+      c2 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);
+    }
+    else if (aPreviousSide == TOP)
+    {
+      c1 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);
+      c2 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
+    }
+    else if (aPreviousSide == BOTTOM)
+    {
+      c1 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+      c2 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);      
+    }
+    else
+    {
+      throw std::logic_error("Unexpected previosu side passed to function \
+                              computing contour in saddle cell of type 10");
+    }
+
+    return {{c1.x, c1.y, aIsoline}, {c2.x, c2.y, aIsoline}};
+  }
+
+  /**
    * Look up table for controu lines:
    *  o----o  +----+  
    *  |    |  |    |
