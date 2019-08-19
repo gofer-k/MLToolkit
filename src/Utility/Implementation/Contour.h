@@ -2,7 +2,11 @@
 #define MLTOOLKIT_UTILITY_CONTOUR_CONTOUR_H
 
 #include "CommonTypes.h"
+
+#include <boost/serialization/strong_typedef.hpp>
+
 #include <array>
+#include <vector>
 
 #include <boost/serialization/strong_typedef.hpp>
 

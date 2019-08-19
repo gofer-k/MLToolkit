@@ -218,36 +218,40 @@ namespace
    *  |   /|
    *  +----O
    */
-  ContourGenerator::ContourPoints
-  ComputeCountourInSaddleCellType5(SurfaceCell aCell, double aIsoline, CellSide aPreviousSide)
+  Point3d
+  ComputeCountourInSaddleCellType5(const SurfaceCell& aCell, double aIsoline, CellSide aPreviousSide, 
+                                   bool aFirstPoint)
   {
     const auto& topLeft = aCell.TopLeft();
     const auto& topRight = aCell.TopRight();  
     const auto& bottomRight = aCell.BottomRight();
     const auto& bottomLeft = aCell.BottomLeft();
 
-    Point2d c1{};
-    Point2d c2{};
+    Point2d c{};
 
-    if (aPreviousSide == LEFT)
+    if (aPreviousSide == CellSide::LEFT)
     {
-      c1 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
-      c2 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);      
+      c = aFirstPoint
+          ? lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline)
+          : lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);      
     }
-    else if(aPreviousSide == RIGHT)
+    else if(aPreviousSide == CellSide::RIGHT)
     {
-      c1 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);
-      c2 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+      c = aFirstPoint
+          ? lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline)
+          : lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
     }
-    else if (aPreviousSide == TOP)
+    else if (aPreviousSide == CellSide::TOP)
     {      
-      c1 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);      
-      c2 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
+      c = aFirstPoint
+          ? lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline)    
+          : lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
     }
-    else if(aPreviousSide == BOTTOM)
+    else if(aPreviousSide == CellSide::BOTTOM)
     {
-      c1 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
-      c2 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
+      c = aFirstPoint
+          ? lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline)
+          : lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
     }
     else
     {
@@ -255,7 +259,7 @@ namespace
                               computing contour in saddle cell of type 5");
     }
     
-    return {{c1.x, c1.y, aIsoline}, {c2.x, c2.y, aIsoline}};
+    return {c.x, c.y, aIsoline};
   }
 
   /**
@@ -265,36 +269,40 @@ namespace
    *  |\   |
    *  o----+
    */
-  ContourGenerator::ContourPoints
-  ComputeCountourInSaddleCellType10(SurfaceCell aCell, double aIsoline, CellSide aPreviousSide)
+  Point3d
+  ComputeCountourInSaddleCellType10(const SurfaceCell& aCell, double aIsoline, CellSide aPreviousSide,
+                                    bool aFirstPoint)
   {
     const auto& topLeft = aCell.TopLeft();
     const auto& topRight = aCell.TopRight();  
     const auto& bottomRight = aCell.BottomRight();
     const auto& bottomLeft = aCell.BottomLeft();
       
-    Point2d c1{};
-    Point2d c2{};
+    Point2d c{};
       
-    if (aPreviousSide == LEFT)
+    if (aPreviousSide == CellSide::LEFT)
     {
-      c1 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
-      c2 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+      c = aFirstPoint
+          ? lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline)
+          : lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
     }
-    else if (aPreviousSide == RIGHT)
+    else if (aPreviousSide == CellSide::RIGHT)
     {
-      c1 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);
-      c2 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);
+      c = aFirstPoint
+          ? lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline)
+          : lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);
     }
-    else if (aPreviousSide == TOP)
+    else if (aPreviousSide == CellSide::TOP)
     {
-      c1 = lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);
-      c2 = lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
+      c = aFirstPoint
+          ? lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline)
+          : lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
     }
-    else if (aPreviousSide == BOTTOM)
+    else if (aPreviousSide == CellSide::BOTTOM)
     {
-      c1 = lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
-      c2 = lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);      
+      c = aFirstPoint
+          ? lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline)
+          : lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);      
     }
     else
     {
@@ -302,7 +310,7 @@ namespace
                               computing contour in saddle cell of type 10");
     }
 
-    return {{c1.x, c1.y, aIsoline}, {c2.x, c2.y, aIsoline}};
+    return {c.x, c.y, aIsoline};
   }
 
   /**
