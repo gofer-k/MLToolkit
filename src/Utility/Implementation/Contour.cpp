@@ -660,6 +660,11 @@ void Point3d::Reset()
   p.x = p.y = z = 0.0;
 }
 
+void Point3d::Reset()
+{
+  x = y = z = 0.0;
+}
+
 void SurfaceCell::Print() const
 {
   std::cout << "(type, flipped, (top-left), [(top-right), (bottom-right), (bottom-left)]): "
@@ -738,6 +743,7 @@ void SurfaceCell::ResetCellType()
       // make this cell above isoline to prevent reusing it in subsequent contour computations.
       iCellType = 15;
   }
+  std::for_each(iData.begin(), iData.end(), [](Point3d& aPoint) { aPoint.Reset(); });  
 }
 
 CellSide SurfaceCell::GetNextTraversalSide(CellSide aPreviousSide) const
