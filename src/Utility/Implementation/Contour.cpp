@@ -48,6 +48,21 @@ namespace Contour
     return true;
   }
 
+  bool operator==(const Point3d aLhs, const Point3d aRhs)
+  {
+    static const double eps = 1e-6;
+
+    if (aLhs.p != aRhs.p)
+    {
+      return false;
+    }
+    if (std::fabs(aLhs.z - aRhs.z) >= eps)
+    {
+      return false;
+    }
+    return true;
+  }
+
 namespace
 {
   constexpr bool kFirstPoint = true;
@@ -232,26 +247,26 @@ namespace
     if (aPreviousSide == CellSide::LEFT)
     {
       c = aFirstPoint
-          ? lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline)
-          : lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);      
+          ? lerp2d({topRight.p.y, topRight.z}, {bottomRight.p.y, bottomRight.z}, aIsoline)
+          : lerp2d({bottomLeft.p.x, bottomLeft.z}, {bottomRight.p.x, bottomRight.z}, aIsoline);      
     }
     else if(aPreviousSide == CellSide::RIGHT)
     {
       c = aFirstPoint
-          ? lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline)
-          : lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+          ? lerp2d({topLeft.p.y, topLeft.z}, {bottomLeft.p.y, bottomLeft.z}, aIsoline)
+          : lerp2d({topLeft.p.x, topLeft.z}, {topRight.p.x, topRight.z}, aIsoline);
     }
     else if (aPreviousSide == CellSide::TOP)
     {      
       c = aFirstPoint
-          ? lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline)    
-          : lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);
+          ? lerp2d({bottomLeft.p.x, bottomLeft.z}, {bottomRight.p.x, bottomRight.z}, aIsoline)    
+          : lerp2d({topRight.p.y, topRight.z}, {bottomRight.p.y, bottomRight.z}, aIsoline);
     }
     else if(aPreviousSide == CellSide::BOTTOM)
     {
       c = aFirstPoint
-          ? lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline)
-          : lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
+          ? lerp2d({topLeft.p.x, topLeft.z}, {topRight.p.x, topRight.z}, aIsoline)
+          : lerp2d({topLeft.p.y, topLeft.z}, {bottomLeft.p.y, bottomLeft.z}, aIsoline);      
     }
     else
     {
@@ -270,7 +285,7 @@ namespace
    *  o----+
    */
   Point3d
-  ComputeCountourInSaddleCellType10(const SurfaceCell& aCell, double aIsoline, CellSide aPreviousSide,
+  ComputeCountourInSaddleCellType10(const SurfaceCell& aCell, TCoordType aIsoline, CellSide aPreviousSide,
                                     bool aFirstPoint)
   {
     const auto& topLeft = aCell.TopLeft();
@@ -283,26 +298,26 @@ namespace
     if (aPreviousSide == CellSide::LEFT)
     {
       c = aFirstPoint
-          ? lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline)
-          : lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline);
+          ? lerp2d({topRight.p.y, topRight.z}, {bottomRight.p.y, bottomRight.z}, aIsoline)
+          : lerp2d({topLeft.p.x, topLeft.z}, {topRight.p.x, topRight.z}, aIsoline);
     }
     else if (aPreviousSide == CellSide::RIGHT)
     {
       c = aFirstPoint
-          ? lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline)
-          : lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline);
+          ? lerp2d({topLeft.p.y, topLeft.z}, {bottomLeft.p.y, bottomLeft.z}, aIsoline)
+          : lerp2d({bottomLeft.p.x, bottomLeft.z}, {bottomRight.p.x, bottomRight.z}, aIsoline);
     }
     else if (aPreviousSide == CellSide::TOP)
     {
       c = aFirstPoint
-          ? lerp2d({bottomLeft.x, bottomLeft.z}, {bottomRight.x, bottomRight.z}, aIsoline)
-          : lerp2d({topLeft.y, topLeft.z}, {bottomLeft.y, bottomLeft.z}, aIsoline);      
+          ? lerp2d({bottomLeft.p.x, bottomLeft.z}, {bottomRight.p.x, bottomRight.z}, aIsoline)
+          : lerp2d({topLeft.p.y, topLeft.z}, {bottomLeft.p.y, bottomLeft.z}, aIsoline);      
     }
     else if (aPreviousSide == CellSide::BOTTOM)
     {
       c = aFirstPoint
-          ? lerp2d({topLeft.x, topLeft.z}, {topRight.x, topRight.z}, aIsoline)
-          : lerp2d({topRight.y, topRight.z}, {bottomRight.y, bottomRight.z}, aIsoline);      
+          ? lerp2d({topLeft.p.x, topLeft.z}, {topRight.p.x, topRight.z}, aIsoline)
+          : lerp2d({topRight.p.y, topRight.z}, {bottomRight.p.y, bottomRight.z}, aIsoline);      
     }
     else
     {
@@ -662,7 +677,7 @@ void Point3d::Reset()
 
 void Point3d::Reset()
 {
-  x = y = z = 0.0;
+  p.x = p.y = z = 0.0;
 }
 
 void SurfaceCell::Print() const
@@ -743,7 +758,7 @@ void SurfaceCell::ResetCellType()
       // make this cell above isoline to prevent reusing it in subsequent contour computations.
       iCellType = 15;
   }
-  std::for_each(iData.begin(), iData.end(), [](Point3d& aPoint) { aPoint.Reset(); });  
+  // std::for_each(iData.begin(), iData.end(), [](Point3d& aPoint) { aPoint.Reset(); });  
 }
 
 CellSide SurfaceCell::GetNextTraversalSide(CellSide aPreviousSide) const
@@ -1008,6 +1023,36 @@ ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, const RowIndex& 
   return path;
 }
 
+ContourGenerator::ContourPoints
+ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, TCoordType aIsoline)
+{
+  ContourPoints path;
+  
+  for (const auto& row : aGrid)
+  {
+    for (const auto& cell : row)
+    {
+      if (cell.CrossesIsoline())
+      {
+        // 1. Get contour points from starting cell and add them to the contour path
+        auto firstPoint = GetContourPoint(cell, aIsoline, CellSide::NONE, kFirstPoint);
+        path.push_back(std::move(firstPoint));
+
+        auto secondPoint = GetContourPoint(cell, aIsoline, CellSide::NONE, kSecondPoint);
+        path.push_back(std::move(secondPoint));    
+      }
+      else
+      {
+        path.push_back({std::numeric_limits<TCoordType>::max(),
+                        std::numeric_limits<TCoordType>::max(),
+                        std::numeric_limits<TCoordType>::max()});
+      }      
+    }
+  }
+
+  return path;
+}
+
 ContourGenerator::Contours
 ContourGenerator::GetContours(const Matrix& aMeshData, IsolineLevels aIsolines)
 {
@@ -1032,6 +1077,9 @@ ContourGenerator::GetContours(const Matrix& aMeshData, IsolineLevels aIsolines)
     auto marshingSquaresGrid = BuildMarshingSquaresGrid(aMeshData, isoline);
 
     ContourPaths paths; 
+
+    ContourPoints isolinePoints = GetIsolinePoints(marshingSquaresGrid, isoline);
+    paths.emplace_back(isolinePoints);
 
     // 2. for each cell in the grid
     for (auto row = 0; row < marshingSquaresGrid.Rows(); ++row)
