@@ -1076,14 +1076,14 @@ ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, TCoordType aIsol
 {
   ContourPoints path;
   
-  for (row = 0; row < aGrid.Rows(); ++row)
-  {
-    for (col = 0; col < aGrid.Cols(); ++col)
-    {
-      std::cout << "Elem[" << row << ", " << col
-                << "] type: " << static_cast<int>(aGrid.GetCell(row, col).Type()) << std::endl;
-    }
-  }
+  // for (row = 0; row < aGrid.Rows(); ++row)
+  // {
+  //   for (col = 0; col < aGrid.Cols(); ++col)
+  //   {
+  //     std::cout << "Elem[" << row << ", " << col
+  //               << "] type: " << static_cast<int>(aGrid.GetCell(row, col).Type()) << std::endl;
+  //   }
+  // }
   return path;
 }
 
@@ -1111,9 +1111,6 @@ ContourGenerator::GetContours(const Matrix& aMeshData, IsolineLevels aIsolines)
     auto marshingSquaresGrid = BuildMarshingSquaresGrid(aMeshData, isoline);
 
     ContourPaths paths; 
-
-    // ContourPoints isolinePoints = GetIsolinePoints(marshingSquaresGrid, isoline);
-    // paths.emplace_back(isolinePoints);
 
     // 2. for each cell in the grid
     for (auto row = 0; row < marshingSquaresGrid.Rows(); ++row)
