@@ -17,7 +17,7 @@ namespace Plot
   void PlotRegression(const Matrix& aX, const Matrix& aY, const Matrix& aPrediction, 
                       std::string aLabelX, std::string aLabelY, std::string aTitle);
 
-  void PlotCostFunction(const Matrix& aTheta1, const Matrix& aTheta2, const Matrix& aJ);
+  void PlotCostFunction(const Vector& aTheta1, const Vector& aTheta2, const Matrix& aJ);
 
 }}}
 

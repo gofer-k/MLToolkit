@@ -64,8 +64,7 @@ TEST_P(CostFunctionTest, SingleFeature)
 
   Matrix X = getSamples();
   Matrix y = getResults();
-  Matrix theta = arma::zeros(2, 1);
-
+  
   const auto testData = GetParam();
   EXPECT_NEAR(testData.expectedCost, CostFunction(X, y, testData.theta), 1e-2);
 }

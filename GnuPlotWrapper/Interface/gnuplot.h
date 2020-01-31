@@ -88,11 +88,9 @@ public:
 
     void setContourMode()
     {
-        // sendLine("set view map");
         // sendLine("unset surface");
         sendLine("set contour base");
-        sendLine("set style data lines");
-        sendLine("set cntrparam level incremental 0, 100, 1000");
+        sendLine("set style data lines");        
     }
 private:
     GnuplotPipe(GnuplotPipe const&) = delete;
