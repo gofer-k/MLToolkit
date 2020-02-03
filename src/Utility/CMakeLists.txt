@@ -4,6 +4,7 @@ project(MLToolkit.Utility)
 find_package(Boost 1.67 COMPONENTS serialization REQUIRED)
 
 add_library(${PROJECT_NAME} 
+    Implementation/CommonTypes.cpp
     Implementation/Contour.cpp
     Implementation/Contour.h
     Implementation/CostFunction.cpp

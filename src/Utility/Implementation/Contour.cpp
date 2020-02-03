@@ -12,46 +12,29 @@ namespace Utility
 {
 namespace Contour
 {
-  bool operator==(const Point2d aLhs, const Point2d aRhs)
-  {
-    static const double eps = 1e-6;
-
-    if (std::fabs(aLhs.x - aRhs.x) >= eps)
-    {
-      return false;
-    }
-    if (std::fabs(aLhs.y - aRhs.y) >= eps)
-    {
-      return false;
-    }
-    return true;
-  }
-
   TCoordType lerp(const TCoordType aV0, const TCoordType& aV1, TCoordType aT)
   {
     const static TCoordType unitValue = static_cast<TCoordType>(1);
     return (unitValue - aT) * aV0 + aT * aV1;
   }
 
-  bool operator==(const Point3d aLhs, const Point3d aRhs)
-  {
-    static const double eps = 1e-6;
-
-    if (aLhs.p != aRhs.p)
-    {
-      return false;
-    }
-    if (std::fabs(aLhs.z - aRhs.z) >= eps)
-    {
-      return false;
-    }
-    return true;
-  }
-
 namespace
 {
   constexpr bool kFirstPoint = true;
   constexpr bool kSecondPoint = false;
+
+
+  std::ostream& operator<<(std::ostream& aOut, const Point2d& aPoint2d)
+  {
+    aOut << "(x, y) = (" << aPoint2d.x << ", " << aPoint2d.y << ")";
+    return aOut;
+  }
+
+  std::ostream& operator<<(std::ostream& aOut, const Point3d& aPoint3d)
+  {
+    aOut << "(x, y, z) = (" << aPoint3d.p.x << ", " << aPoint3d.p.y << ", " << aPoint3d.z << ")";
+    return aOut;
+  }
 
   /**
    * Look up table for controu lines, No flip - case 5
@@ -447,7 +430,6 @@ namespace
     return ComputeContourPointInCell<6>(aCell, aIsoline, aPreviousSide, !aFirstPoint);
   }
   
-  //TODO: Check correctness of computeatin here
   template<>
   Point3d
   ComputeContourPointInCell<10>(const SurfaceCell& aCell, TCoordType aIsoline, CellSide aPreviousSide, bool aFirstPoint)
@@ -544,21 +526,6 @@ namespace
   }
 }
 
-void Point2d::Print() const
-{
-  std::cout << "(x, y) = (" << x << ", " << y << ")";
-}
-
-void Point3d::Print() const
-{
-  std::cout << "(x, y, z) = (" << p.x << ", " << p.y << ", " << z << ")";
-}
-
-void Point3d::Reset()
-{
-  p.x = p.y = z = 0.0;
-}
-
 void SurfaceCell::Print() const
 {
   std::cout << "(type, flipped, (top-left), [(top-right), (bottom-right), (bottom-left)]): "
@@ -567,7 +534,7 @@ void SurfaceCell::Print() const
 
   for (auto i = 0; i < iData.size(); ++i)
   {
-    iData.at(i).Print();
+    std::cout << iData.at(i);
     if (i < (iData.size() - 1))
     {
       std::cout << ", ";
@@ -784,8 +751,6 @@ ContourGenerator::BuildMarshingSquaresGrid(const Matrix& aMeshData, TCoordType a
   return grid;
 }
 
-// TODO: Debug traversing mashing squares. Algorithm gets stuck in endless loop.
-// Caused by incorrect computation of the next traversing cell.
 ContourGenerator::ContourPoints
 ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, const RowIndex& aRow,
                                    const ColIndex& aCol, TCoordType aIsoline)
@@ -811,7 +776,7 @@ ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, const RowIndex& 
   ColIndex col = aCol;
   auto& startCell = aGrid.GetCell(row, col);
    
-  Contour::Point3d firstPoint, secondPoint;
+  Point3d firstPoint, secondPoint;
 
   std::cout << "--algorithm start at row: " << row
             << ", col: " << col
@@ -885,17 +850,6 @@ ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, const RowIndex& 
               << ", flipped: " << currentCell->IsFlipped() << std::endl;
   }
 
-  // std::cout << "Algorithm finished with found path of "
-  //           << static_cast<int>(path.size()) << " segments" << std::endl;
-  
-  // for (row = 0; row < aGrid.Rows(); ++row)
-  // {
-  //   for (col = 0; col < aGrid.Cols(); ++col)
-  //   {
-  //     std::cout << "Elem[" << row << ", " << col
-  //               << "] type: " << static_cast<int>(aGrid.GetCell(row, col).Type()) << std::endl;
-  //   }
-  // }
   return path;
 }
 
@@ -942,21 +896,7 @@ ContourGenerator::GetContours(const Matrix& aMeshData, IsolineLevels aIsolines)
         }
       }
     }
-    // std::cout << "For isoline: " << isoline << " found contour paths: " << paths.size() << std::endl;
-    // int i = 1;
-    // for (const auto& path : paths)
-    // {
-    //   std::cout << "path: " << i << std::endl;
-    //   int p = 1;
-    //   for (const auto& point : path)
-    //   {        
-    //     std::cout << "Point " << p << ": ";
-    //     point.Print();
-    //     std::cout << std::endl;
-    //     ++p;
-    //   }
-    //   ++i;
-    // }
+    
     contours.try_emplace(isoline, paths);
   }
 
