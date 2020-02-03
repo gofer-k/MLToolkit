@@ -11,8 +11,7 @@ namespace Contour {
 
 std::ostream& operator<<(std::ostream& aOut, const Point3d& aPathPoint)
 {
-  aPathPoint.Print();
-  aOut << std::endl;
+  aOut << aPathPoint << std::endl;
   return aOut;
 }
 
@@ -61,8 +60,8 @@ TEST_F(ContourTest, CreateContourGrid_DiamondCase)
                  {1, 2, 3, 2, 1},
                  {1, 1, 1, 1, 1}};
 
-  const ContourGenerator::IsolineLevels isoLevels = {1, 2, 3};
-  const auto isolines = ContourGenerator::GetContours(test, isoLevels);
+  const Contour::ContourGenerator::IsolineLevels isoLevels = {1, 2, 3};
+  const auto isolines = Contour::ContourGenerator::GetContours(test, isoLevels);
 
   EXPECT_EQ(isoLevels.size(), isolines.size());
   

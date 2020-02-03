@@ -57,6 +57,7 @@ namespace Plot
     gp.setTitle(aTitle);
     gp.sendLine(plotCommand.str());
   }
+  
   void PlotCostFunction(const Vector& aTheta1, const Vector& aTheta2, const Matrix& aJ)
   {
     std::stringstream gridData;
@@ -81,4 +82,28 @@ namespace Plot
     PlotContours(gp, filename, isoLevels);
   }
   
+  void PlotIsolines(const Utility::TIsolines& aIsolines)
+  {
+    std::stringstream os;
+    GnuplotPipe gp;
+
+    for (const auto& isoline : aIsolines)
+    {
+      for (const auto& isolinePoint : isoline)
+      {
+        os << isolinePoint.x << "\t" << isolinePoint.y;
+        gp.sendLine(os.str(), true);
+        os.str("");
+      }
+      gp.sendLine("", true);
+    }
+    const std::string filename {"/tmp/plotIsolines.dat"};
+    gp.writeBufferToFile(filename);
+
+    os.str("");
+    os << "plot \"" << filename << "\" using 1:2 with lines";
+
+    gp.sendLine(os.str());
+  }
+
 }}}

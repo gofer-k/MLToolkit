@@ -23,29 +23,8 @@ namespace Contour
   // BOOST_STRONG_TYPEDEF(std::size_t, ColIndex);
   using RowIndex = std::size_t;
   using ColIndex = std::size_t;
-  using TCoordType = double;
-  struct Point2d
-  {
-    TCoordType x{};
-    TCoordType y{};
-
-    friend bool operator==(const Point2d aLhs, const Point2d aRhs);
-    friend bool operator!=(const Point2d aLhs, const Point2d aRhs) { return !(aLhs == aRhs); }
-    void Print() const;
-  };
-
+  
   Point2d lerp2d(const Point2d aP0, const Point2d& aP1, int y);
-
-  struct Point3d
-  {
-    Point2d p;    
-    TCoordType z{};
-
-    friend bool operator==(const Point3d aLhs, const Point3d aRhs);
-    friend bool operator!=(const Point3d aLhs, const Point3d aRhs) { return !(aLhs == aRhs); }
-    void Print() const;
-    void Reset();
-  };
 
   enum class CellSide : uint8_t 
   {

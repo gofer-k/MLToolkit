@@ -12,61 +12,29 @@ namespace Utility
 {
 namespace Contour
 {
-  bool operator==(const Point2d aLhs, const Point2d aRhs)
-  {
-    static const double eps = 1e-6;
-
-    if (std::fabs(aLhs.x - aRhs.x) >= eps)
-    {
-      return false;
-    }
-    if (std::fabs(aLhs.y - aRhs.y) >= eps)
-    {
-      return false;
-    }
-    return true;
-  }
-
   TCoordType lerp(const TCoordType aV0, const TCoordType& aV1, TCoordType aT)
   {
     const static TCoordType unitValue = static_cast<TCoordType>(1);
     return (unitValue - aT) * aV0 + aT * aV1;
   }
 
-  bool operator==(const Point3d aLhs, const Point3d aRhs)
-  {
-    static const double eps = 1e-6;
-
-    if (aLhs.p != aRhs.p)
-    {
-      return false;
-    }
-    if (std::fabs(aLhs.z - aRhs.z) >= eps)
-    {
-      return false;
-    }
-    return true;
-  }
-
-  bool operator==(const Point3d aLhs, const Point3d aRhs)
-  {
-    static const double eps = 1e-6;
-
-    if (aLhs.p != aRhs.p)
-    {
-      return false;
-    }
-    if (std::fabs(aLhs.z - aRhs.z) >= eps)
-    {
-      return false;
-    }
-    return true;
-  }
-
 namespace
 {
   constexpr bool kFirstPoint = true;
   constexpr bool kSecondPoint = false;
+
+
+  std::ostream& operator<<(std::ostream& aOut, const Point2d& aPoint2d)
+  {
+    aOut << "(x, y) = (" << aPoint2d.x << ", " << aPoint2d.y << ")";
+    return aOut;
+  }
+
+  std::ostream& operator<<(std::ostream& aOut, const Point3d& aPoint3d)
+  {
+    aOut << "(x, y, z) = (" << aPoint3d.p.x << ", " << aPoint3d.p.y << ", " << aPoint3d.z << ")";
+    return aOut;
+  }
 
   /**
    * Look up table for controu lines, No flip - case 5
@@ -98,157 +66,6 @@ namespace
         const TCoordType t = (aIsoline - bottomLeft.z) / (bottomRight.z - bottomLeft.z);
         c.x = lerp(bottomLeft.p.x, bottomRight.p.x, t); c.y = bottomLeft.p.y;
       }
-    }
-    else if(aPreviousSide == CellSide::RIGHT)
-    {
-      if (aFirstPoint)
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (bottomLeft.z - topLeft.z);
-        c.x = topLeft.p.x;  c.y = lerp(topLeft.p.y, bottomLeft.p.y, t);
-      }
-      else
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (topRight.z - topLeft.z);
-        c.x = lerp(topLeft.p.x, topRight.p.x, t); c.y = topLeft.p.y;
-      }      
-    }
-    else if (aPreviousSide == CellSide::TOP)
-    { 
-      if (aFirstPoint)
-      {
-        const TCoordType t = (aIsoline - bottomLeft.z) / (bottomRight.z - bottomLeft.z);
-        c.x = lerp(bottomLeft.p.x, bottomRight.p.x, t); c.y = bottomLeft.p.y;
-      }
-      else
-      {
-        const TCoordType t = (aIsoline - topRight.z) / (bottomRight.z - topRight.z);
-        c.x = topRight.p.x; c.y = lerp(topRight.p.y, bottomRight.p.y, t);
-      }
-    }
-    else if(aPreviousSide == CellSide::BOTTOM)
-    {
-      if (aFirstPoint)
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (topRight.z - topLeft.z);
-        c.x = lerp(topLeft.p.x, topRight.p.x, t); c.y = topLeft.p.y;
-      }
-      else
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (bottomLeft.z - topLeft.z);
-        c.x = topLeft.p.x;  c.y = lerp(topLeft.p.y, bottomLeft.p.y, t);
-      }
-    }
-    else
-    {
-      throw std::logic_error("Unexpected previosu side passed to function \
-                              computing contour in saddle cell of type 5");
-    }
-    
-    return {c.x, c.y, aIsoline};
-  }
-
-  /**
-   * Look up table for controu lines, No flip - case 10
-   *  +----o
-   *  |   \|
-   *  |\   |
-   *  o----+
-   */
-  Point3d
-  ComputeCountourInSaddleCellType10(const SurfaceCell& aCell, TCoordType aIsoline, CellSide aPreviousSide,
-                                    bool aFirstPoint)
-  {
-    const auto& topLeft = aCell.TopLeft();
-    const auto& topRight = aCell.TopRight();  
-    const auto& bottomRight = aCell.BottomRight();
-    const auto& bottomLeft = aCell.BottomLeft();
-      
-    Point2d c{};
-      
-    if (aPreviousSide == CellSide::LEFT)
-    {
-      if (aFirstPoint)
-      {
-        const TCoordType t = (aIsoline - topRight.z) / (bottomRight.z - topRight.z);
-        c.x = topRight.p.x; c.y = lerp(topRight.p.y, bottomRight.p.y, t);
-      }
-      else
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (topRight.z - topLeft.z);
-        c.x = lerp(topLeft.p.x, topRight.p.x, t); c.y = topLeft.p.y;
-      }
-    }
-    else if (aPreviousSide == CellSide::RIGHT)
-    {
-      if (aFirstPoint)
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (bottomLeft.z - topLeft.z);
-        c.x = topLeft.p.x;  c.y = lerp(topLeft.p.y, bottomLeft.p.y, t);
-      }
-      else
-      {
-        const TCoordType t = (aIsoline - bottomLeft.z) / (bottomRight.z - bottomLeft.z);
-        c.x = lerp(bottomLeft.p.x, bottomRight.p.x, t); c.y = bottomLeft.p.y;
-      }
-    }
-    else if (aPreviousSide == CellSide::TOP)
-    {
-      if (aFirstPoint)
-      {
-        const TCoordType t = (aIsoline - bottomLeft.z) / (bottomRight.z - bottomLeft.z);
-        c.x = lerp(bottomLeft.p.x, bottomRight.p.x, t); c.y = bottomLeft.p.y;
-      }
-      else
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (bottomLeft.z - topLeft.z);
-        c.x = topLeft.p.x;  c.y = lerp(topLeft.p.y, bottomLeft.p.y, t);
-      }
-    }
-    else if (aPreviousSide == CellSide::BOTTOM)
-    {
-      if (aFirstPoint)
-      {
-        const TCoordType t = (aIsoline - topLeft.z) / (topRight.z - topLeft.z);
-        c.x = lerp(topLeft.p.x, topRight.p.x, t); c.y = topLeft.p.y;
-      }
-      else
-      {
-        const TCoordType t = (aIsoline - topRight.z) / (bottomRight.z - topRight.z);
-        c.x = topRight.p.x; c.y = lerp(topRight.p.y, bottomRight.p.y, t);
-      }
-    }
-    else
-    {
-      throw std::logic_error("Unexpected previosu side passed to function \
-                              computing contour in saddle cell of type 10");
-    }
-
-    return {c.x, c.y, aIsoline};
-  }
-
-  /**
-   * Look up table for controu lines, No flip - case 5
-   *  o----+
-   *  |/   |
-   *  |   /|
-   *  +----O
-   */
-  Point3d
-  ComputeCountourInSaddleCellType5(const SurfaceCell& aCell, double aIsoline, CellSide aPreviousSide, 
-                                   bool aFirstPoint)
-  {
-    const auto& topLeft = aCell.TopLeft();
-    const auto& topRight = aCell.TopRight();  
-    const auto& bottomRight = aCell.BottomRight();
-    const auto& bottomLeft = aCell.BottomLeft();
-
-    Point2d c{};
-
-    if (aPreviousSide == CellSide::LEFT)
-    {
-      c = aFirstPoint
-          ? lerp2d({topRight.p.y, topRight.z}, {bottomRight.p.y, bottomRight.z}, aIsoline)
-          : lerp2d({bottomLeft.p.x, bottomLeft.z}, {bottomRight.p.x, bottomRight.z}, aIsoline);      
     }
     else if(aPreviousSide == CellSide::RIGHT)
     {
@@ -709,26 +526,6 @@ namespace
   }
 }
 
-void Point2d::Print() const
-{
-  std::cout << "(x, y) = (" << x << ", " << y << ")";
-}
-
-void Point3d::Print() const
-{
-  std::cout << "(x, y, z) = (" << p.x << ", " << p.y << ", " << z << ")";
-}
-
-void Point3d::Reset()
-{
-  p.x = p.y = z = 0.0;
-}
-
-void Point3d::Reset()
-{
-  p.x = p.y = z = 0.0;
-}
-
 void SurfaceCell::Print() const
 {
   std::cout << "(type, flipped, (top-left), [(top-right), (bottom-right), (bottom-left)]): "
@@ -737,7 +534,7 @@ void SurfaceCell::Print() const
 
   for (auto i = 0; i < iData.size(); ++i)
   {
-    iData.at(i).Print();
+    std::cout << iData.at(i);
     if (i < (iData.size() - 1))
     {
       std::cout << ", ";
@@ -930,8 +727,6 @@ ContourGenerator::BuildMarshingSquaresGrid(const Matrix& aMeshData, TCoordType a
       paddedData.at(row + 1, col + 1) = aMeshData.at(row, col);
     }
   }
-  return {};
-}
 
   const decltype(paddedData.n_rows) gridRows = paddedData.n_rows - 1;
   const decltype(paddedData.n_cols) gridCols = paddedData.n_cols - 1;
@@ -956,8 +751,6 @@ ContourGenerator::BuildMarshingSquaresGrid(const Matrix& aMeshData, TCoordType a
   return grid;
 }
 
-// TODO: Debug traversing mashing squares. Algorithm gets stuck in endless loop.
-// Caused by incorrect computation of the next traversing cell.
 ContourGenerator::ContourPoints
 ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, const RowIndex& aRow,
                                    const ColIndex& aCol, TCoordType aIsoline)
@@ -983,7 +776,7 @@ ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, const RowIndex& 
   ColIndex col = aCol;
   auto& startCell = aGrid.GetCell(row, col);
    
-  Contour::Point3d firstPoint, secondPoint;
+  Point3d firstPoint, secondPoint;
 
   std::cout << "--algorithm start at row: " << row
             << ", col: " << col
@@ -1057,33 +850,6 @@ ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, const RowIndex& 
               << ", flipped: " << currentCell->IsFlipped() << std::endl;
   }
 
-  // std::cout << "Algorithm finished with found path of "
-  //           << static_cast<int>(path.size()) << " segments" << std::endl;
-  
-  // for (row = 0; row < aGrid.Rows(); ++row)
-  // {
-  //   for (col = 0; col < aGrid.Cols(); ++col)
-  //   {
-  //     std::cout << "Elem[" << row << ", " << col
-  //               << "] type: " << static_cast<int>(aGrid.GetCell(row, col).Type()) << std::endl;
-  //   }
-  // }
-  return path;
-}
-
-ContourGenerator::ContourPoints
-ContourGenerator::GetIsolinePoints(TMarshingSquaresGrid& aGrid, TCoordType aIsoline)
-{
-  ContourPoints path;
-  
-  // for (row = 0; row < aGrid.Rows(); ++row)
-  // {
-  //   for (col = 0; col < aGrid.Cols(); ++col)
-  //   {
-  //     std::cout << "Elem[" << row << ", " << col
-  //               << "] type: " << static_cast<int>(aGrid.GetCell(row, col).Type()) << std::endl;
-  //   }
-  // }
   return path;
 }
 
@@ -1130,21 +896,7 @@ ContourGenerator::GetContours(const Matrix& aMeshData, IsolineLevels aIsolines)
         }
       }
     }
-    // std::cout << "For isoline: " << isoline << " found contour paths: " << paths.size() << std::endl;
-    // int i = 1;
-    // for (const auto& path : paths)
-    // {
-    //   std::cout << "path: " << i << std::endl;
-    //   int p = 1;
-    //   for (const auto& point : path)
-    //   {        
-    //     std::cout << "Point " << p << ": ";
-    //     point.Print();
-    //     std::cout << std::endl;
-    //     ++p;
-    //   }
-    //   ++i;
-    // }
+    
     contours.try_emplace(isoline, paths);
   }
 
